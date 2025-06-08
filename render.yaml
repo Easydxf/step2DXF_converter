@@ -1,0 +1,140 @@
+services:
+  # Main FastAPI application
+  - type: web
+    name: cad-sheet-metal-service
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    
+    # Free tier configuration
+    plan: free
+    region: oregon
+    
+    # Build settings
+    buildCommand: docker build --target production -t cad-service .
+    
+    # Health check
+    healthCheckPath: /health
+    
+    # Environment variables
+    envVars:
+      # Server configuration
+      - key: PORT
+        value: 8000
+      - key: HOST
+        value: 0.0.0.0
+      - key: ENVIRONMENT
+        value: production
+      
+      # Free tier optimized limits
+      - key: MAX_FILE_SIZE
+        value: 10485760  # 10MB
+      - key: PROCESSING_TIMEOUT
+        value: 300       # 5 minutes
+      - key: MAX_PARTS_PER_ASSEMBLY
+        value: 20        # Complexity limit
+      
+      # FreeCAD configuration
+      - key: DEFAULT_K_FACTOR
+        value: 0.5
+      - key: DEFAULT_BEND_RADIUS
+        value: 1.0
+      
+      # Redis configuration (using Render's Redis addon)
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: cad-redis
+          property: connectionString
+    
+    # Disk storage for temporary files
+    disk:
+      name: cad-storage
+      mountPath: /app/temp
+      sizeGB: 1  # 1GB free tier limit
+    
+    # Auto-deploy from main branch
+    autoDeploy: true
+    
+    # Resource allocation (free tier)
+    numInstances: 1
+    
+    # Startup and shutdown
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT --workers 1
+    
+    # Custom domains (optional)
+    # domains:
+    #   - cad-service.yourdomain.com
+
+  # Redis service for job queue and caching
+  - type: redis
+    name: cad-redis
+    plan: free  # Free tier: 25MB memory, 20 connections
+    region: oregon
+    
+    # Configuration for free tier optimization
+    config:
+      maxmemory-policy: allkeys-lru
+      maxmemory: 20mb
+    
+    # Auto-deploy
+    autoDeploy: true
+
+  # Optional: Background worker service (requires paid tier)
+  # - type: worker
+  #   name: cad-worker
+  #   runtime: docker
+  #   dockerfilePath: ./Dockerfile
+  #   dockerContext: .
+  #   plan: starter  # Minimum paid plan for workers
+  #   
+  #   envVars:
+  #     - key: ENVIRONMENT
+  #       value: production
+  #     - key: REDIS_URL
+  #       fromService:
+  #         type: redis
+  #         name: cad-redis
+  #         property: connectionString
+  #   
+  #   startCommand: celery -A app.core.celery_app worker --loglevel=info --concurrency=1
+
+# Database (if needed in future)
+# databases:
+#   - name: cad-db
+#     databaseName: cad_service
+#     user: cad_user
+#     plan: free  # Free tier: 1GB storage, 1 month retention
+
+# Static site for documentation (optional)
+# - type: static
+#   name: cad-docs
+#   buildCommand: mkdocs build
+#   staticPublishPath: ./site
+#   domains:
+#     - docs.cad-service.com
+
+# Cron jobs for cleanup (requires paid tier)
+# - type: cron
+#   name: cleanup-temp-files
+#   schedule: "0 */6 * * *"  # Every 6 hours
+#   buildCommand: echo "Cleanup job"
+#   startCommand: python scripts/cleanup_temp_files.py
+
+# Environment-specific configuration
+environments:
+  production:
+    # Production-specific settings
+    envVars:
+      - key: LOG_LEVEL
+        value: INFO
+      - key: ENABLE_CORS
+        value: "true"
+  
+  preview:
+    # Preview environment for testing
+    envVars:
+      - key: LOG_LEVEL
+        value: DEBUG
+      - key: ENABLE_CORS
+        value: "true"
