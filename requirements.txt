@@ -1,0 +1,59 @@
+# FastAPI and web framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+
+# File handling and validation
+python-multipart==0.0.6
+python-magic==0.4.27
+aiofiles==23.2.1
+
+# Background job processing
+celery==5.3.4
+redis==5.0.1
+
+# Data validation and serialization
+pydantic==2.5.0
+pydantic-settings==2.0.3
+
+# HTTP client for external requests
+httpx==0.25.2
+
+# Logging and monitoring
+structlog==23.2.0
+
+# File compression
+zipfile36==0.1.3
+
+# Date and time handling
+python-dateutil==2.8.2
+
+# Environment variable management
+python-dotenv==1.0.0
+
+# UUID generation
+uuid==1.30
+
+# System utilities
+psutil==5.9.6
+
+# Math and geometry utilities (lightweight)
+numpy==1.24.4
+
+# File path utilities
+pathlib2==2.3.7
+
+# Error tracking (optional, lightweight)
+sentry-sdk[fastapi]==1.38.0
+
+# Testing dependencies (for development)
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+httpx==0.25.2
+
+# Code formatting (for development)
+black==23.11.0
+isort==5.12.0
+
+# Type checking (for development)
+mypy==1.7.1
