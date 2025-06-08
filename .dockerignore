@@ -1,0 +1,95 @@
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+LICENSE
+docs/
+*.md
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python cache and virtual environments
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+env/
+.venv/
+.env
+
+# Testing
+tests/
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.cache
+
+# Development dependencies
+requirements-dev.txt
+
+# Local development
+docker-compose.yml
+docker-compose.override.yml
+.env.local
+.env.development.local
+
+# Temporary and cache files
+temp/*
+uploads/*
+outputs/*
+*.tmp
+*.log
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+*.sublime-project
+*.sublime-workspace
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# Compressed files (except required ones)
+*.zip
+*.tar.gz
+*.rar
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Node.js (if any frontend tools)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local scripts
+scripts/dev.sh
+scripts/local.sh
+
+# Security sensitive files
+*.pem
+*.key
+certificates/
+
+# Deployment specific
+.render/
+.vercel/
+.netlify/
